@@ -13,7 +13,6 @@ class Feedback extends React.Component {
 
     onClickFeedback = event => {
         const position = event.currentTarget.textContent;
-        console.log('click')
     this.setState(prevState => ({
       [position]: prevState[position] + 1,
     }));
