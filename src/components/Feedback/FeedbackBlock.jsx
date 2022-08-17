@@ -1,58 +1,67 @@
-import React from "react";
+import {useState, useEffect} from "react";
 import styled from '@emotion/styled';
 import { Statistics } from "components/Statistics/Statistics";
 import { FeedbackCategory } from "components/FeedbackCategory/FeedbackCategory";
 
-class Feedback extends React.Component {
+function Feedback () {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  
+  const state = { good, neutral, bad }
+  
+ 
 
-    state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-    }
-
-    onClickFeedback = event => {
+    const onClickFeedback = event => {
         const position = event.currentTarget.textContent;
-    this.setState(prevState => ({
-      [position]: prevState[position] + 1,
-    }));
+   
+        switch (position) {
+            case 'good':
+                setGood(good + 1);
+                break;
+            case 'neutral':
+                setNeutral(neutral + 1);
+                break;
+            case 'bad':
+                setBad(bad + 1);
+                break;
+
+            default:
+                break;
+        }
     }
   
 
-    optionKeys = Object.keys(this.state);
+    const optionKeys = Object.keys(state);
 
-   countTotalFeedback = () => {
-    return Object.values(this.state).reduce((total, item) => total + item, 0);
+   const countTotalFeedback = () => {
+    return Object.values(state).reduce((total, item) => total + item, 0);
   };
 
-  countPositiveFeedbackPercentage = () => {
-    const { good } = this.state;
-    const total = this.countTotalFeedback();
+  const countPositiveFeedbackPercentage = () => {
+    const total = countTotalFeedback();
     const result = total && good / total;
 
     return Math.round(result * 100);
   };
 
 
-    render() {
-        const { good, neutral, bad } = this.state;
         const showFeedback = good > 0 || neutral > 0 || bad > 0;
         return (
             <FeedbackContainer>
                 <FeedbackTitle>Please leave feedback</FeedbackTitle>
                 <FeedbackCategory
-                    options={this.optionKeys}
-                    handleFeedback={this.onClickFeedback}
+                    options={optionKeys}
+                    handleFeedback={onClickFeedback}
                 />
                 <FeedbackTitle>Statistics</FeedbackTitle>
                 {showFeedback && <Statistics
-              {...this.state}
-              total={this.countTotalFeedback()}
-              percent={this.countPositiveFeedbackPercentage ()}
+              {...state}
+              total={countTotalFeedback()}
+              percent={countPositiveFeedbackPercentage ()}
             />} 
             </FeedbackContainer>
         )
-    }
 }
 
 export default Feedback;
